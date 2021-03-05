@@ -25,7 +25,7 @@ app.post('/api/payment-card', async (req, res) => {
 
     const body = {
     Channel:"EC",
-	Store:"39038540035",
+	Store:"39435780010",
 	CardNumber:cardNumber,
 	Expiration:expire,
     CVC:cvc,
@@ -92,7 +92,7 @@ app.post('/api/refund', async (req, res) => {
     
     const body = {
     Channel:"ECS",
-	Store:"39038540035",
+	Store:"39435780010",
 	CardNumber:"",
 	Expiration:"",
     CVC:"",
