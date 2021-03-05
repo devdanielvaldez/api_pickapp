@@ -57,14 +57,14 @@ app.post('/api/payment-card', async (req, res) => {
 
 
     axios
-        .post('https://pruebas.azul.com.do/WebServices/JSON/Default.aspx', body, {
+        .post('https://pagos.azul.com.do/webservices/JSON/Default.aspx', body, {
             headers: {
-                'auth1': 'testcert2',
-                'auth2': 'testcert2'
+                'auth1': 'PICKAPP',
+                'auth2': '%QG&TnfUtogx'
             },
             httpsAgent: new https.Agent({
-                pfx: fs.readFileSync('./cert/cert-azul.pfx'),
-                passphrase: '1234'
+                pfx: fs.readFileSync('./cert/produccion.pfx'),
+                passphrase: 'PickApp123'
             }) 
         })
         .then(response => {
