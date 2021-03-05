@@ -1,0 +1,27 @@
+    axios
+        .post('https://pagos.azul.com.do/webservices/JSON/Default.aspx', body, {
+            headers: {
+                'auth1': 'PICKAPP',
+                'auth2': '%QG&TnfUtogx'
+            },
+            httpsAgent: new https.Agent({
+                pfx: fs.readFileSync('./cert/produccion.pfx'),
+                passphrase: 'PickApp123'
+            }) 
+        })
+        .then(response => {
+            res.status(200).json({ data: response.data })
+            console.log(response)
+            transporter.sendMail(mailOptions, function (err, data) {
+                if (err) {
+                    console.log('ERROR MSGMAIL012897', err)
+                } else {
+                    console.log('EMAIL SEND', data)
+                }
+            })
+        })
+        .catch((err) => {
+            res.status(400).json({
+            error: err
+        })
+    })

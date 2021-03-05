@@ -1,0 +1,10 @@
+POST http://localhost:3000/api/payment-card
+Content-Type: application/json
+
+{
+    "nombre": "Daniel Valdez",
+    "cardNumber": "4850727991501454",
+    "cvc": "748",
+    "expire": "202412",
+    "amount": "70"
+}
