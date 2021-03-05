@@ -31,7 +31,7 @@ app.post('/api/payment-card', async (req, res) => {
     CVC:cvc,
 	TrxType:"Sale",
 	PosInputMode:"E-Commerce",
-	Amount:amount.toFixed(),
+	Amount:amount,
     ITBIS: itbis,
 	OrderNumber:"1"
     }
