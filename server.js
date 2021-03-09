@@ -81,19 +81,19 @@ app.post('/api/payment-card', async (req, res) => {
             }
 
             if (response.data.ErrorDescription == 'SGS-002303: Invalid credit card number') {
-                res.status(400).json({ data: "NM-01" })
+                res.status(200).json({ data: "NM-01" })
             }
 
             if (response.data.ErrorDescription == 'VALIDATION_ERROR:CVC') {
-                res.status(400).json({ data: "CVC-02" })
+                res.status(200).json({ data: "CVC-02" })
             }
 
             if (response.data.ErrorDescription == 'VALIDATION_ERROR:Expiration') {
-                res.status(400).json({ data: "F-03" })
+                res.status(200).json({ data: "F-03" })
             }
 
             if (response.data.ResponseMessage == 'ERROR' || 'Error') {
-                res.status(400).json({ data: "ERROR" })
+                res.status(200).json({ data: "ERROR" })
             }
 
 
