@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
     "nombre": "Daniel Valdez",
-    "cardNumber": "4850727991501454",
+    "cardNumber": "4850727991501422",
     "cvc": "748",
     "expire": "202412",
     "amount": "70"

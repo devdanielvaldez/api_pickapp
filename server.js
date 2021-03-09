@@ -68,9 +68,9 @@ app.post('/api/payment-card', async (req, res) => {
             }) 
         })
         .then(response => {
-            res.status(200).json({ data: response.data })
             console.log(response.data)
             if (response.data.ResponseMessage == 'APROBADA') {
+                res.status(200).json({ data: "APROBADA" })
             transporter.sendMail(mailOptions, function (err, data) {
                 if (err) {
                     console.log('ERROR MSGMAIL012897', err)
@@ -79,6 +79,24 @@ app.post('/api/payment-card', async (req, res) => {
                 }
             })
             }
+
+            if (response.data.ErrorDescription == 'SGS-002303: Invalid credit card number') {
+                res.status(400).json({ data: "NM-01" })
+            }
+
+            if (response.data.ErrorDescription == 'VALIDATION_ERROR:CVC') {
+                res.status(400).json({ data: "CVC-02" })
+            }
+
+            if (response.data.ErrorDescription == 'VALIDATION_ERROR:Expiration') {
+                res.status(400).json({ data: "F-03" })
+            }
+
+            if (response.data.ResponseMessage == 'ERROR' || 'Error') {
+                res.status(400).json({ data: "ERROR" })
+            }
+
+
         })
         .catch((err) => {
             res.status(400).json({
