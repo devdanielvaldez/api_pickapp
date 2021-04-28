@@ -12,52 +12,17 @@ app.use(morgan(':method :url :status :response-time ms'));
 app.use(bodyParser.json());
 app.use(cors());
 
-app.listen(3000, () => {
-    console.log('Server up at port 3000')
+app.listen(4000, () => {
+    console.log('Server up at port 4000')
 })
 
 // POST //
 
 app.post('/api/payment-card', async (req, res) => {
-    const { nombre, cardNumber, cvc, expire, amount, email, itbis, articulo, delivery } = req.body;
-
-    var orderNumber = 0
-
-    const body = {
-    Channel:"EC",
-	Store:"39435780010",
-	CardNumber:cardNumber,
-	Expiration:expire,
-    CVC:cvc,
-	TrxType:"Sale",
-	PosInputMode:"E-Commerce",
-	Amount:amount,
-    ITBIS: itbis,
-	OrderNumber:"1"
-    }
 
     console.log(req.body)
-
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'pickapp.do@gmail.com',
-            pass: 'eapmacmd'
-        }
-    });
-
-    let mailOptions = {
-        from: 'pickapp.do@gmail.com',
-        to: email,
-        subject: 'Factura de Compra - PickApp',
-        html: `<div style="width:100%;height:100vh;background-color:#E2E2E2;color:#000;padding-top:40px;"> <img src="https://pickapp.do/wp-content/uploads/2020/10/LOGO-PICK-APP-ORIGINAL-e1603588025771.png" style="margin-top:90px; display: block; margin-left: auto; margin-right: auto;"/> <br/> <h2 style="text-align: center;">Factura PickApp</h2> <br><div style="width: 260px; display: block; margin-right: auto; margin-left: auto;"> <div style="width: 260px; display: block; margin-right: auto; margin-left: auto; text-align: center;"> <p>Facturado a: <br> ${nombre} </p></div></div><div style="width: 40%; height: 50px; background-color: rgb(255, 176, 73); border-radius: 10px; margin-top: 20px; display: block; margin-left: auto; margin-right: auto; padding-right: 20px; padding-left: 20px;"> <p style="text-align: center; padding-top: 15px;">Gracias Por Preferirnos</p></div><div style="width: 40%; height: 230px; background-color: rgb(189, 189, 189); display: block; margin-left: auto; margin-right: auto; margin-top: 20px; border-radius: 10px; padding-top: 20px; padding-right: 20px; padding-left: 20px;"> <table style="border-bottom: rgb(124, 123, 123) 1px solid; width: 100%; margin-top: 15px;"> <tr> <th style="float: left; margin-left: 10px;">Total del Articulo</th> <th style="float: right;">RD$ ${articulo}</th> </tr></table> <table style="border-bottom: rgb(124, 123, 123) 1px solid; width: 100%; margin-top: 30px;"> <tr> <th style="float: left; margin-left: 10px;">Costo Delivery</th> <th style="float: right;">RD$ ${delivery}</th> </tr></table> <table style="border-bottom: rgb(124, 123, 123) 1px solid; width: 100%; margin-top: 30px;"> <tr> <th style="float: left; margin-left: 10px;">Impuestos</th> <th style="float: right;">RD$ ${itbis}</th> </tr></table><table style="border-bottom: rgb(124, 123, 123) 1px solid; width: 100%; margin-top: 30px;"> <tr> <th style="float: left; margin-left: 10px;">Monto Total</th> <th style="float: right;">RD$ ${amount}</th> </tr></table> </div><br><div style="width: 40%; height: 50px; border-radius: 10px; margin-top: 20px; display: block; margin-left: auto; margin-right: auto; padding-right: 20px; padding-left: 20px;"><a href="https://pickapp.do/politica-de-privacidad/">Politicas De Privacidad</a></div></div>`
-
-    }
-
-
-
     axios
-        .post('https://pagos.azul.com.do/webservices/JSON/Default.aspx', body, {
+        .post('https://pagos.azul.com.do/webservices/JSON/Default.aspx', req.body, {
             headers: {
                 'auth1': 'PICKAPP',
                 'auth2': '%QG&TnfUtogx'
@@ -68,16 +33,9 @@ app.post('/api/payment-card', async (req, res) => {
             }) 
         })
         .then(response => {
-            console.log(response.data)
+            console.log(response)
             if (response.data.ResponseMessage == 'APROBADA') {
                 res.status(200).json({ data: "APROBADA" })
-            transporter.sendMail(mailOptions, function (err, data) {
-                if (err) {
-                    console.log('ERROR MSGMAIL012897', err)
-                } else {
-                    console.log('EMAIL SEND', data)
-                }
-            })
             }
 
             if (response.data.ErrorDescription == 'SGS-002303: Invalid credit card number') {
@@ -92,17 +50,17 @@ app.post('/api/payment-card', async (req, res) => {
                 res.status(200).json({ data: "F-03" })
             }
 
-            if (response.data.ResponseMessage == 'ERROR' || 'Error') {
+            if (response.data.ResponseMessage == 'ERROR') {
                 res.status(200).json({ data: "ERROR" })
             }
 
-
+            if (response.data.ResponseMessage == 'DECLINADA') {
+                res.status(200).json({ data: "DECLINADA" })
+            }
+            if (response.data.ResponseMessage == '3D_SECURE_CHALLENGE') {
+                res.status(200).json({ data: "ERROR AL PROCESAR PAGO, POR FAVOR CONTACTE AL ADMINISTRADOR O A SU BANCO" })
+            }
         })
-        .catch((err) => {
-            res.status(400).json({
-            error: err
-        })
-    })
 })
 
 app.post('/api/refund', async (req, res) => {
@@ -136,7 +94,7 @@ app.post('/api/refund', async (req, res) => {
             })
         })
         .then(response => {
-            res.status(200).json({ data: response.data })
+            res.status(200).json({ data: res.data })
         })
         .catch((err) => {
         res.status(400).json({ error: err })
