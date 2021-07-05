@@ -18,7 +18,11 @@ app.listen(4000, () => {
 
 // POST //
 
-app.post('/api/payment-card', async (req, res) => {
+app.post('/api/invoce', async(req, res) => {
+    console.log(req.body)
+})
+
+app.post('/api/payment-card', async(req, res) => {
 
     console.log(req.body)
     axios
@@ -30,7 +34,7 @@ app.post('/api/payment-card', async (req, res) => {
             httpsAgent: new https.Agent({
                 pfx: fs.readFileSync('./cert/produccion.pfx'),
                 passphrase: 'PickApp123'
-            }) 
+            })
         })
         .then(response => {
             console.log(response)
@@ -63,21 +67,21 @@ app.post('/api/payment-card', async (req, res) => {
         })
 })
 
-app.post('/api/refund', async (req, res) => {
+app.post('/api/refund', async(req, res) => {
     const { Amount, Itbis, Date, OrderId } = req.body;
-    
+
     const body = {
-    Channel:"ECS",
-	Store:"39435780010",
-	CardNumber:"",
-	Expiration:"",
-    CVC:"",
-	PosInputMode:"E-Commerce",
-	TrxType:"Refund",
-	Amount: Amount,
-	Itbis: Itbis,
-	OriginalDate: Date,
-	AzulOrderId: OrderId
+        Channel: "ECS",
+        Store: "39435780010",
+        CardNumber: "",
+        Expiration: "",
+        CVC: "",
+        PosInputMode: "E-Commerce",
+        TrxType: "Refund",
+        Amount: Amount,
+        Itbis: Itbis,
+        OriginalDate: Date,
+        AzulOrderId: OrderId
     }
 
     console.log(req.body)
@@ -97,6 +101,6 @@ app.post('/api/refund', async (req, res) => {
             res.status(200).json({ data: res.data })
         })
         .catch((err) => {
-        res.status(400).json({ error: err })
-    })
+            res.status(400).json({ error: err })
+        })
 })
