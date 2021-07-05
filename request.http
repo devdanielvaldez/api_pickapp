@@ -8,3 +8,16 @@ Content-Type: application/json
     "expire": "202412",
     "amount": "70"
 }
+
+###
+
+POST http://localhost:4000/api/invoce
+Content-Type: application/json
+
+{
+
+    "email": "info@daniel-valdez.com",
+    "total": "377.60"
+
+}
+
